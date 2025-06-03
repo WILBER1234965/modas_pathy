@@ -51,3 +51,5 @@ HTML modular, cada vista con su archivo.
 CSS separado por funcionalidades (admin.css para el panel, login.css para login).
 
 Uso de Bootstrap 5 y Bootstrap Icons para consistencia y facilidad de diseño.
+
+quiero original
