@@ -566,6 +566,10 @@ def admin_usuario_editar(id):
     form = UsuarioForm(obj=user)
     form.is_superadmin.data = '1' if user.is_superadmin else '0'
     if form.validate_on_submit():
+        existing = User.query.filter_by(username=form.username.data).first()
+        if existing and existing.id != user.id:
+            flash('Ya existe un usuario con ese nombre', 'danger')
+            return render_template('admin/usuario_form.html', form=form, nuevo=False, user=user)
         if form.profile_image.data:
             if user.profile_image:
                 old_path = os.path.join(PROFILE_FOLDER, user.profile_image)
