@@ -7,6 +7,8 @@
 {% block content %}
   <style>
     .img-wrapper {
+      
+      position: relative;
       width: 100%;
       height: 350px;
       overflow: hidden;
@@ -16,11 +18,28 @@
       align-items: center;
       justify-content: center;
     }
+    .img-wrapper::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: var(--bg-img);
+      background-size: cover;
+      background-position: center;
+      filter: blur(15px);
+      transform: scale(1.1);
+      z-index: 0;
+    }
     .img-wrapper img {
+      position: relative;
+      z-index: 1;   
       max-width: 100%;
       max-height: 100%;
       object-fit: contain;
       transition: transform .3s ease;
+    }
+    .carousel-caption {
+      position: relative;
+      z-index: 2;
     }
     .hover-shadow:hover .img-wrapper img {
       transform: scale(1.05);
@@ -40,18 +59,22 @@
             <div class="carousel-inner rounded-4 overflow-hidden shadow-sm">
               {% for prod in list %}
                 <div class="carousel-item {% if loop.first %}active{% endif %}">
-                  <div class="img-wrapper">
-                    {% set main = prod.images|selectattr('is_main')|first or prod.images[0] %}
+                  {% set main = prod.images|selectattr('is_main')|first or prod.images[0] %}
+
+                  <div class="img-wrapper" style="--bg-img: url('{{ url_for('static', filename='uploads/' ~ main.filename) }}');">
                     <img src="{{ url_for('static', filename='uploads/' ~ main.filename) }}"
                          alt="{{ prod.name }}">
                   </div>
                   <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded-3 p-2">
                     <h5 class="mb-1 text-capitalize">{{ prod.name }}</h5>
                     <p class="mb-0">Bs {{ '%.2f'|format(prod.price) }}</p>
-                  </div>
+                  </div>                  
+
                 </div>
+                
               {% endfor %}
             </div>
+            
             <button class="carousel-control-prev" type="button" data-bs-target="#{{ cid }}" data-bs-slide="prev">
               <span class="carousel-control-prev-icon"></span>
             </button>
@@ -69,8 +92,8 @@
         {% for prod in destacados %}
           <div class="col-6 col-md-3">
             <div class="card h-100 hover-shadow border-0">
-              <div class="img-wrapper">
-                {% set main = prod.images|selectattr('is_main')|first or prod.images[0] %}
+              {% set main = prod.images|selectattr('is_main')|first or prod.images[0] %}
+              <div class="img-wrapper" style="--bg-img: url('{{ url_for('static', filename='uploads/' ~ main.filename) }}');">
                 <img src="{{ url_for('static', filename='uploads/' ~ main.filename) }}"
                      alt="{{ prod.name }}">
               </div>
