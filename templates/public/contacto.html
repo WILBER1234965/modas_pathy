@@ -10,7 +10,7 @@
     <div class="col-md-6">
       <h5>Escríbenos</h5>
       <p>Si tienes alguna duda o quieres un pedido personalizado, mándanos un mensaje por WhatsApp o llena este formulario:</p>
-      <form action="https://wa.me/591TU_NUMERO" method="get" target="_blank">
+      <form action="https://wa.me/{{ contact_info.whatsapp|replace(' ', '') }}" method="get" target="_blank">
         <div class="mb-3">
           <label for="name" class="form-label">Nombre</label>
           <input type="text" class="form-control" id="name" placeholder="Tu nombre">
@@ -27,9 +27,27 @@
     <div class="col-md-6">
       <h5>Datos de contacto</h5>
       <ul class="list-unstyled">
-        <li><i class="bi bi-geo-alt-fill me-2"></i>Sucre, Bolivia</li>
-        <li><i class="bi bi-whatsapp me-2"></i>+591 7XX XXX XXX</li>
-        <li><i class="bi bi-envelope-fill me-2"></i>modaspathy@example.com</li>
+        {% if contact_info.address %}
+        <li><i class="bi bi-geo-alt-fill me-2"></i>{{ contact_info.address }}</li>
+        {% endif %}
+        {% if contact_info.whatsapp %}
+        <li><i class="bi bi-whatsapp me-2"></i>{{ contact_info.whatsapp }}</li>
+        {% endif %}
+        {% if contact_info.gmail %}
+        <li><i class="bi bi-envelope-fill me-2"></i>{{ contact_info.gmail }}</li>
+        {% endif %}
+        {% if contact_info.facebook %}
+        <li><i class="bi bi-facebook me-2"></i>{{ contact_info.facebook }}</li>
+        {% endif %}
+        {% if contact_info.tiktok %}
+        <li><i class="bi bi-tiktok me-2"></i>{{ contact_info.tiktok }}</li>
+        {% endif %}
+        {% if contact_info.youtube %}
+        <li><i class="bi bi-youtube me-2"></i>{{ contact_info.youtube }}</li>
+        {% endif %}
+        {% if contact_info.telegram %}
+        <li><i class="bi bi-telegram me-2"></i>{{ contact_info.telegram }}</li>
+        {% endif %}
       </ul>
     </div>
   </div>

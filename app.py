@@ -87,7 +87,16 @@ class Theme(db.Model):
 
     def __repr__(self):
         return f'<Theme {self.name}>'
-    
+# Información de contacto de la tienda
+class ContactInfo(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    whatsapp = db.Column(db.String(128))
+    tiktok = db.Column(db.String(128))
+    facebook = db.Column(db.String(128))
+    gmail = db.Column(db.String(128))
+    youtube = db.Column(db.String(128))
+    telegram = db.Column(db.String(128))
+    address = db.Column(db.String(256))
 # --- DECORADOR SUPERADMIN ---
 def superadmin_required(f):
     @wraps(f)
@@ -152,6 +161,16 @@ class ThemeForm(FlaskForm):
     error      = StringField('Color error', validators=[DataRequired(), HEX_COLOR])
     is_default = BooleanField('Tema por defecto')
     submit     = SubmitField('Guardar')
+    
+class ContactForm(FlaskForm):
+    whatsapp = StringField('WhatsApp', validators=[Optional(), Length(max=128)])
+    tiktok   = StringField('TikTok', validators=[Optional(), Length(max=128)])
+    facebook = StringField('Facebook', validators=[Optional(), Length(max=128)])
+    gmail    = StringField('Gmail', validators=[Optional(), Length(max=128)])
+    youtube  = StringField('YouTube', validators=[Optional(), Length(max=128)])
+    telegram = StringField('Telegram', validators=[Optional(), Length(max=128)])
+    address  = StringField('Dirección', validators=[Optional(), Length(max=256)])
+    submit   = SubmitField('Guardar')
 
 # --- CONTEXT PROCESSOR para notificaciones globales ---
 @app.context_processor
@@ -214,6 +233,10 @@ def seed_themes_once():
                 is_default = (i == 0)
             )
             db.session.add(theme)
+        # Crea registro de contactos inicial si no existe
+        if ContactInfo.query.count() == 0:
+            db.session.add(ContactInfo())
+            db.session.commit()
 
         db.session.commit()
         _seeded = True
@@ -615,6 +638,23 @@ def admin_usuario_eliminar(id):
     flash('Usuario eliminado', 'warning')
     return redirect(url_for('admin_usuarios'))
 
+# --- INFORMACIÓN DE CONTACTO ---
+@app.route('/admin/contactos', methods=['GET', 'POST'])
+@login_required
+def admin_contactos():
+    info = ContactInfo.query.first()
+    if not info:
+        info = ContactInfo()
+        db.session.add(info)
+        db.session.commit()
+    form = ContactForm(obj=info)
+    if form.validate_on_submit():
+        form.populate_obj(info)
+        db.session.commit()
+        flash('Datos de contacto actualizados', 'success')
+        return redirect(url_for('admin_contactos'))
+    return render_template('admin/contactos.html', form=form)
+
 @app.context_processor
 def inject_public_data():
     # Traemos categorías para el menú público
@@ -622,8 +662,8 @@ def inject_public_data():
     # Exponemos además la hora actual para usar now()
     return {
         'public_categories': categorias,
-        'now': lambda fmt=None: datetime.utcnow().strftime(fmt or '%Y')
-        
+        'now': lambda fmt=None: datetime.utcnow().strftime(fmt or '%Y'),
+        'contact_info': ContactInfo.query.first() 
     }
 
 # ─── CRUD DE TEMAS ───────────────────────────────────────────────────────────────
