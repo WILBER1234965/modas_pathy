@@ -89,7 +89,7 @@
     <section class="mt-5">
       <h2 class="mb-4">Productos</h2>
       <div class="row g-4">
-        {% for prod in destacados %}
+        {% for prod in productos %}
           <div class="col-6 col-md-3">
             <div class="card h-100 hover-shadow border-0">
               {% set main = prod.images|selectattr('is_main')|first or prod.images[0] %}

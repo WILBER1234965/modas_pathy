@@ -16,6 +16,7 @@ from config import Config
 from werkzeug.utils import secure_filename
 from functools import wraps
 from datetime import datetime
+from sqlalchemy import or_
 import random
 import os
 
@@ -249,6 +250,7 @@ def index():
     novedades = Product.query.filter_by(is_new=True).all()
     tendencias = Product.query.filter_by(is_trending=True).all()
     destacados = Product.query.filter_by(is_featured=True).all()
+    productos = Product.query.order_by(Product.id.desc()).all()
 
     # Barajamos cada lista para que salga en orden aleatorio
     random.shuffle(novedades)
@@ -259,16 +261,33 @@ def index():
         'public/index.html',
         novedades=novedades,
         tendencias=tendencias,
-        destacados=destacados
+        destacados=destacados,
+        productos=productos
     )
 
 
 
 @app.route('/catalogo')
 def catalogo():
-    # Más adelante podremos filtrar por ?categoria=<id>
-    productos = Product.query.order_by(Product.id.desc()).all()
-    return render_template('public/catalogo.html', productos=productos)
+    q = request.args.get('q', '').strip()
+    categoria_id = request.args.get('categoria', type=int)
+
+    query = Product.query
+    if categoria_id:
+        query = query.filter_by(category_id=categoria_id)
+    if q:
+        like = f"%{q}%"
+        query = query.filter(or_(Product.name.ilike(like), Product.description.ilike(like)))
+
+    productos = query.order_by(Product.id.desc()).all()
+    categoria = Category.query.get(categoria_id) if categoria_id else None
+
+    return render_template(
+        'public/catalogo.html',
+        productos=productos,
+        categoria=categoria,
+        search=q
+    )
 
 @app.route('/quienes-somos')
 def quienes_somos():
