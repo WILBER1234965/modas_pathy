@@ -24,8 +24,8 @@
             </div>
             <div class="mt-3">
               <p class="fw-bold mb-2">Bs {{ '%.2f'|format(prod.price) }}</p>
-              <a href="https://wa.me/{{ contact_info.whatsapp|replace(' ', '') }}?text=Hola,%20quiero%20el%20producto%20{{ prod.name }}" class="btn btn-success btn-feedback w-100">
-                <i class="bi bi-whatsapp"></i> WhatsApp
+              <a href="{{ url_for('producto_detalle', id=prod.id) }}" class="btn btn-primary w-100">
+                <i class="bi bi-info-circle"></i> Ver detalle
               </a>
             </div>
           </div>

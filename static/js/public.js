@@ -53,4 +53,18 @@ document.addEventListener('DOMContentLoaded', () => {
       gsap.to(btn, { scale: 1, duration: 0.3, ease: 'power1.out' });
     });
   });
+  
+
+// Actualiza el mensaje de WhatsApp con el color seleccionado
+  const colorSelect = document.getElementById('colorSelect');
+  const waText = document.getElementById('wa_text');
+  if (colorSelect && waText) {
+    const baseText = waText.value;
+    const updateText = () => {
+      const color = colorSelect.value;
+      waText.value = baseText.replace('COLOR_PLACEHOLDER', 'color ' + color);
+    };
+    colorSelect.addEventListener('change', updateText);
+    updateText();
+  }
 });

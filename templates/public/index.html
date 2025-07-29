@@ -104,10 +104,8 @@
                 </div>
                 <div class="mt-3">
                   <p class="fw-bold mb-2">Bs {{ '%.2f'|format(prod.price) }}</p>
-                  {% set img_url = url_for('static', filename='uploads/' ~ main.filename, _external=True) %}
-                  <a href="https://wa.me/{{ contact_info.whatsapp|replace(' ', '') }}?text={{ ('Hola, quiero el producto ' ~ prod.name ~ ' ' ~ img_url)|urlencode }}"
-                     class="btn btn-success btn-feedback w-100">
-                    <i class="bi bi-whatsapp"></i> WhatsApp
+                  <a href="{{ url_for('producto_detalle', id=prod.id) }}" class="btn btn-primary w-100">
+                    <i class="bi bi-info-circle"></i> Ver detalle
                   </a>
                 </div>
               </div>

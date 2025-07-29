@@ -297,6 +297,12 @@ def quienes_somos():
 def contacto():
     return render_template('public/contacto.html')
 
+# Página de detalle de producto
+@app.route('/producto/<int:id>')
+def producto_detalle(id):
+    producto = Product.query.get_or_404(id)
+    return render_template('public/producto_detalle.html', producto=producto)
+
 # --- AUTENTICACIÓN ADMIN ---
 
 @login.user_loader
