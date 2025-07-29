@@ -14,6 +14,7 @@ from wtforms.validators import (
 )
 from config import Config
 from werkzeug.utils import secure_filename
+from werkzeug.exceptions import RequestEntityTooLarge
 from functools import wraps
 from datetime import datetime
 from sqlalchemy import or_
@@ -774,6 +775,11 @@ def suscripcion():
         return redirect(url_for('index'))
     return render_template('public/suscripcion.html')
 
+# --- MANEJO DE ERRORES -------------------------------------------------------
+@app.errorhandler(RequestEntityTooLarge)
+def handle_file_too_large(e):
+    flash('El archivo seleccionado supera el límite permitido.', 'danger')
+    return redirect(request.referrer or url_for('admin_dashboard'))
 
 # --- CREACIÓN DE LA BD Y ARRANQUE ---
 if __name__ == '__main__':

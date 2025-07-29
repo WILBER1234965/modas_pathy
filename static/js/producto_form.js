@@ -6,6 +6,7 @@ let existingMainId = null;       // id para imágenes existentes
 const preview = document.getElementById('preview-container');
 const fileInput = document.getElementById('image-input');
 const mainIndexInput = document.getElementById('main_image_index');
+const MAX_UPLOAD = 16 * 1024 * 1024; // 16MB
 
 // Si al cargar la página ya hay una principal (backend), la leemos:
 document.addEventListener('DOMContentLoaded', () => {
@@ -148,6 +149,12 @@ document.querySelector('form').addEventListener('submit', function (e) {
 
   const esNuevo = fileInput.dataset.nuevo === 'true';
   const hasExisting = document.querySelectorAll('[data-backend="true"]').length > 0;
+  const totalSize = filesList.reduce((t, f) => t + f.size, 0);
+  if (totalSize > MAX_UPLOAD) {
+    alert('El tamaño total de las imágenes supera el límite de 16MB.');
+    e.preventDefault();
+    return;
+  }
   if (esNuevo && fileInput.files.length === 0 && !hasExisting) {
     alert('Por favor, sube al menos una imagen del producto.');
     e.preventDefault();

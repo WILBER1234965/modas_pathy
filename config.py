@@ -8,5 +8,6 @@ class Config:
 
     # Para subir imágenes
     UPLOAD_FOLDER = os.path.join(basedir, 'static', 'uploads')
-    MAX_CONTENT_LENGTH = 2 * 1024 * 1024  # 2 MB máximo
+    # Aumentamos el límite general de subida para permitir varias imágenes
+    MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16 MB
     ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
