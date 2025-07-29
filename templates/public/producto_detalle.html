@@ -4,46 +4,51 @@
 {% block page_title %}{{ producto.name }}{% endblock %}
 
 {% block content %}
-<div class="row g-4">
-  <div class="col-md-6">
-    <div id="carouselProducto" class="carousel slide" data-bs-ride="carousel">
-      <div class="carousel-inner rounded-4 overflow-hidden shadow-sm">
-        {% for img in producto.images %}
-        <div class="carousel-item {% if loop.first %}active{% endif %}">
-          <img src="{{ url_for('static', filename='uploads/' ~ img.filename) }}" class="d-block w-100" alt="{{ producto.name }}">
+<div class="container px-0">
+  <div class="card product-detail-card border-0 shadow-lg" data-aos="fade-up">
+    <div class="row g-4 align-items-start">
+      <div class="col-md-6">
+        <div class="product-detail-gallery">
+          <div id="carouselProducto" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+              {% for img in producto.images %}
+              <div class="carousel-item {% if loop.first %}active{% endif %}">
+                <img src="{{ url_for('static', filename='uploads/' ~ img.filename) }}" class="d-block w-100" alt="{{ producto.name }}">
+              </div>
+              {% endfor %}
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselProducto" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon"></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselProducto" data-bs-slide="next">
+              <span class="carousel-control-next-icon"></span>
+            </button>
+          </div>
         </div>
-        {% endfor %}
       </div>
-      <button class="carousel-control-prev" type="button" data-bs-target="#carouselProducto" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon"></span>
-      </button>
-      <button class="carousel-control-next" type="button" data-bs-target="#carouselProducto" data-bs-slide="next">
-        <span class="carousel-control-next-icon"></span>
-      </button>
-    </div>
-  </div>
-  <div class="col-md-6">
-    <h3 class="text-capitalize">{{ producto.name }}</h3>
-    <p class="lead fw-bold">Bs {{ '%.2f'|format(producto.price) }}</p>
-    <p>{{ producto.description }}</p>
-    <form id="orderForm" action="https://wa.me/{{ contact_info.whatsapp|replace(' ', '') }}" method="get" target="_blank">
-      <div class="mb-3">
-        <label for="colorSelect" class="form-label">Color</label>
-        <select id="colorSelect" class="form-select">
-          <option value="Rojo">Rojo</option>
-          <option value="Azul">Azul</option>
-          <option value="Verde">Verde</option>
-          <option value="Negro">Negro</option>
-          <option value="Blanco">Blanco</option>
-        </select>
+      <div class="col-md-6">
+        <h3 class="text-capitalize">{{ producto.name }}</h3>
+        <p class="lead fw-bold">Bs {{ '%.2f'|format(producto.price) }}</p>
+        <p class="mb-4">{{ producto.description }}</p>
+        <form id="orderForm" action="https://wa.me/{{ contact_info.whatsapp|replace(' ', '') }}" method="get" target="_blank">
+          <div class="mb-3">
+            <label for="colorSelect" class="form-label">Color</label>
+            <select id="colorSelect" class="form-select">
+              <option value="Rojo">Rojo</option>
+              <option value="Azul">Azul</option>
+              <option value="Verde">Verde</option>
+              <option value="Negro">Negro</option>
+              <option value="Blanco">Blanco</option>
+            </select>
+          </div>
+          {% set main = producto.images|selectattr('is_main')|first or producto.images[0] %}
+          {% set img_url = url_for('static', filename='uploads/' ~ main.filename, _external=True) %}
+          <input type="hidden" name="text" id="wa_text" value="Hola, quiero el producto {{ producto.name }} COLOR_PLACEHOLDER {{ img_url }}">
+          <button type="submit" id="whatsappOrderBtn" class="btn btn-success btn-feedback w-100">
+            <i class="bi bi-whatsapp"></i> Pedir ahora
+          </button>
+        </form>
       </div>
-      {% set main = producto.images|selectattr('is_main')|first or producto.images[0] %}
-      {% set img_url = url_for('static', filename='uploads/' ~ main.filename, _external=True) %}
-      <input type="hidden" name="text" id="wa_text" value="Hola, quiero el producto {{ producto.name }} COLOR_PLACEHOLDER {{ img_url }}">
-      <button type="submit" id="whatsappOrderBtn" class="btn btn-success btn-feedback w-100">
-        <i class="bi bi-whatsapp"></i> Pedir ahora
-      </button>
-    </form>
   </div>
 </div>
 {% endblock %}
