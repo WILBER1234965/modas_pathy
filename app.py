@@ -685,11 +685,18 @@ def admin_contactos():
 def inject_public_data():
     # Traemos categorías para el menú público
     categorias = Category.query.order_by(Category.name).all()
+       # Aseguramos que exista un registro de contacto para evitar errores en las
+    # vistas públicas
+    contact = ContactInfo.query.first()
+    if contact is None:
+        contact = ContactInfo()
+        db.session.add(contact)
+        db.session.commit()
     # Exponemos además la hora actual para usar now()
     return {
         'public_categories': categorias,
         'now': lambda fmt=None: datetime.utcnow().strftime(fmt or '%Y'),
-        'contact_info': ContactInfo.query.first() 
+        'contact_info': contact
     }
 
 # ─── CRUD DE TEMAS ───────────────────────────────────────────────────────────────
